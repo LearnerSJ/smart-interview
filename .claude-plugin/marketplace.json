@@ -1,0 +1,16 @@
+{
+  "name": "smart-interview",
+  "owner": { "name": "Sullabh Jhamb", "url": "https://github.com/LearnerSJ" },
+  "description": "Smart Interview — customer-interview workflow plugin for Claude Code.",
+  "plugins": [
+    {
+      "name": "smart-interview",
+      "source": {
+        "source": "github",
+        "repo": "LearnerSJ/smart-interview"
+      },
+      "description": "Customer-interview workflow: brief -> guide -> transcript -> scored assumptions -> PRD-ready Excel + Word + PPT + Markdown deliverables.",
+      "version": "0.1.0"
+    }
+  ]
+}

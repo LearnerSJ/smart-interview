@@ -1,0 +1,18 @@
+{
+  "name": "smart-interview",
+  "version": "0.1.0",
+  "description": "Customer-interview workflow: brief -> guide -> transcript -> scored assumptions -> PRD-ready local Excel workbook.",
+  "author": "Sullabh Jhamb",
+  "entry": { "skill": "smart-interview-start" },
+  "skills": [
+    "skills/smart-interview-start",
+    "skills/intake-normaliser",
+    "skills/interview-guide-generator",
+    "skills/transcript-signal-extractor",
+    "skills/scoring-engine",
+    "skills/workbook-mapper",
+    "skills/qa-validator",
+    "skills/deliverable-exporter"
+  ],
+  "hooks": "hooks/hooks.json"
+}
