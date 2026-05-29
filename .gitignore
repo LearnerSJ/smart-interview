@@ -4,3 +4,7 @@ hooks/evidence.log
 __pycache__/
 *.pyc
 .DS_Store
+
+# scratch inputs from interview runs
+guide.json
+assumptions.json

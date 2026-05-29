@@ -5,10 +5,7 @@
   "plugins": [
     {
       "name": "smart-interview",
-      "source": {
-        "source": "github",
-        "repo": "LearnerSJ/smart-interview"
-      },
+      "source": "./",
       "description": "Customer-interview workflow: brief -> guide -> transcript -> scored assumptions -> PRD-ready Excel + Word + PPT + Markdown deliverables.",
       "version": "0.1.0"
     }
