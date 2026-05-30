@@ -22,7 +22,7 @@ from __future__ import annotations
 import argparse, json, sys
 from pathlib import Path
 
-import store, scoring, export_xlsx, synthesis, prd_export
+import store, scoring, export_xlsx, synthesis, prd_export, ppt_export
 
 QA_STATE = Path(__file__).resolve().parent.parent / "hooks" / ".qa_state"
 
@@ -165,6 +165,10 @@ def cmd_export_prd(args):
         out = args.out_word or f"output/{s['slug']}_PRD.docx"
         prd_export.build_word(out, s, scores, assumptions, interviews, signals, ranked, sat)
         written.append(out)
+    if fmt in ("ppt", "all"):
+        out = args.out_ppt or f"output/{s['slug']}_readout.pptx"
+        ppt_export.build_pptx(out, s, scores, assumptions, interviews, signals, ranked, sat)
+        written.append(out)
     print(json.dumps({"prd_written": written}))
 
 
@@ -212,7 +216,7 @@ def main():
     c = sub.add_parser("export"); c.add_argument("--db", required=True); c.add_argument("--out"); c.set_defaults(fn=cmd_export)
     c = sub.add_parser("set-usecases"); c.add_argument("--db", required=True); c.add_argument("--payload", required=True); c.set_defaults(fn=cmd_set_usecases)
     c = sub.add_parser("synthesise"); c.add_argument("--db", required=True); c.set_defaults(fn=cmd_synthesise)
-    c = sub.add_parser("export-prd"); c.add_argument("--db", required=True); c.add_argument("--format", choices=["word","md","all"], default="all"); c.add_argument("--out-md"); c.add_argument("--out-word"); c.set_defaults(fn=cmd_export_prd)
+    c = sub.add_parser("export-prd"); c.add_argument("--db", required=True); c.add_argument("--format", choices=["word","md","ppt","all"], default="all"); c.add_argument("--out-md"); c.add_argument("--out-word"); c.add_argument("--out-ppt"); c.set_defaults(fn=cmd_export_prd)
     c = sub.add_parser("qa"); c.add_argument("--db", required=True); c.set_defaults(fn=cmd_qa)
 
     args = ap.parse_args()

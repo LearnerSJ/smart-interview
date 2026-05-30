@@ -58,7 +58,7 @@ python3 scripts/study.py why            --db ... --id A1
 python3 scripts/study.py set-usecases   --db ... --payload usecases.json
 python3 scripts/study.py synthesise     --db ...
 python3 scripts/study.py export         --db ... [--out output/<slug>.xlsx]
-python3 scripts/study.py export-prd     --db ... --format word|md|all
+python3 scripts/study.py export-prd     --db ... --format word|md|ppt|all
 python3 scripts/study.py qa             --db ...
 ```
 
@@ -70,4 +70,4 @@ Per assumption, over the interviews that addressed it (weighted by ICP-fit):
 `n=1` positives are **WEAK/thin**, not STRONG — count never substitutes for confidence.
 Thresholds are configurable per study; `why` explains every verdict with driver/counter quotes.
 
-Outputs: `output/<slug>.sqlite` (truth), `output/<slug>.xlsx`, `output/<slug>_PRD.docx`, `output/<slug>_PRD.md`.
+Outputs: `output/<slug>.sqlite` (truth), `output/<slug>.xlsx`, `output/<slug>_PRD.docx`, `output/<slug>_PRD.md`, `output/<slug>_readout.pptx`.

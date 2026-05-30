@@ -6,8 +6,8 @@
     {
       "name": "smart-interview",
       "source": "./",
-      "description": "Multi-interview user-research workflow: brief -> guide -> looped client calls -> code-scored assumptions (strength/consensus/confidence, explainable) -> Excel report + Word/Markdown PRD with quote-level traceability. Single-PM, local SQLite ledger.",
-      "version": "0.2.0"
+      "description": "Multi-interview user-research workflow: brief -> guide -> looped client calls -> code-scored assumptions (strength/consensus/confidence, explainable) -> Excel report + Word/Markdown PRD + PowerPoint readout, with quote-level traceability. Single-PM, local SQLite ledger.",
+      "version": "0.2.1"
     }
   ]
 }

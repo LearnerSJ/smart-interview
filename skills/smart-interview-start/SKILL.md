@@ -58,8 +58,8 @@ Emergent assumptions ARE allowed mid-study (via add-assumption). Use
    🛑 GATE: show proposed use cases before scoring. Wait.
 10. **Synthesise** -> `python3 scripts/study.py synthesise --db ...` (saturation +
     weighted prioritisation). 🛑 GATE: show result; "Proceed to PRD?" Wait.
-11. **Deliverables** -> 🛑 GATE: ask which formats (excel / word / md / all) FIRST, then:
-    `study.py export ...` (Excel report) and `study.py export-prd --format ... ...`.
+11. **Deliverables** -> 🛑 GATE: ask which formats (excel / word / ppt / md / all) FIRST, then:
+    `study.py export ...` (Excel report) and `study.py export-prd --format word|md|ppt|all ...`.
 
 ## State carried between steps
 `slug`, `db_path`, `intake`, `assumptions[]`, `interviews[]`, `scores{}`, `use_cases[]`
