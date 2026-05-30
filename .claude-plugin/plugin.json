@@ -1,7 +1,7 @@
 {
   "name": "smart-interview",
-  "version": "0.1.0",
-  "description": "Customer-interview workflow: brief -> guide -> transcript -> scored assumptions -> PRD-ready local Excel workbook.",
+  "version": "0.2.0",
+  "description": "Multi-interview user-research workflow: brief -> guide -> looped client calls -> code-scored assumptions (with explainability) -> Excel report + Word/Markdown PRD. Single-PM, local SQLite ledger.",
   "author": {
     "name": "Sullabh Jhamb",
     "url": "https://github.com/LearnerSJ"

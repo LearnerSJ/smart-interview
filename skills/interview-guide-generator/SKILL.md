@@ -1,14 +1,14 @@
 ---
 name: interview-guide-generator
-description: Produce the interview guide and seed the local Excel workbook with the canonical sheet structure.
+description: Produce the interview guide from intake + assumptions (draft only; the orchestrator creates the study separately).
 ---
 
-# interview-guide-generator
+# interview-guide-generator (v0.2)
 
 ## Inputs
 `intake`, `assumptions[]`.
 
-## Output: interview guide
+## Output: interview guide (DRAFT)
 1. **Intro** (60s) — purpose, consent to record, ground rules.
 2. **Warm-up** (3 questions) — role + current workflow.
 3. **Assumption probes** — >=1 question per assumption. Open-ended, no leading.
@@ -17,28 +17,15 @@ description: Produce the interview guide and seed the local Excel workbook with 
 
 Each row: `{question_id, section, text, assumption_ids[]}`. Every assumption probed by >=1 question.
 
-## Seed the workbook
-
-Run from the plugin root:
+## Hand-off
+This skill produces the guide ONLY. It does not create or seed any file. After the PM
+confirms the guide, the orchestrator (`smart-interview-start`) creates the study with:
 
 ```bash
-python3 scripts/workbook.py seed \
-  --path "output/<feature_slug>.xlsx" \
-  --guide guide.json \
-  --assumptions assumptions.json
+python3 scripts/study.py create-study --db output/<slug>.sqlite --payload create.json
 ```
 
-`workbook.py seed` creates the file with exactly these sheets/columns:
-
-| Sheet | Columns |
-|---|---|
-| Guide | question_id, section, text, assumption_ids |
-| Assumption Matrix | id, text, source, score, class, evidence_refs |
-| Scoping Matrix | use_case_id, description, priority, linked_assumptions |
-| MVP Specifications | feature_id, name, description, linked_assumptions |
-| Evidence Log | timestamp, assumption_id, quote, line_ref, polarity, score |
-| Open Questions | id, question, reason, linked_assumptions |
-
-Populate `Guide` (all questions) and `Assumption Matrix` (id, text, source). Other sheets stay empty until post-interview.
-
-Return `workbook_path`.
+where `create.json` carries `name`, `slug`, `intake`, and `assumptions[]` (each with a
+category: W/A/M/T/G). The guide itself is captured in the study intake/notes; questions
+are reused verbatim during interviews. Return the guide to the orchestrator for the
+confirmation gate.

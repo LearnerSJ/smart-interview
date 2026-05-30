@@ -1,35 +1,50 @@
-# Smart Interview — Global Rules
+# Smart Interview — Global Rules (v0.2)
 
 These rules apply to every skill, tool call, and output in this workflow.
 
-## Workbook integrity
-- Sheet names and column headers are FROZEN. Never rename, reorder, or add columns.
-- Schema exceptions require explicit user approval, logged in `Evidence Log`.
-- Required sheets: `Guide`, `Assumption Matrix`, `Scoping Matrix`, `MVP Specifications`, `Evidence Log`, `Open Questions`.
+## Source of truth
+- A local **SQLite study** is the single source of truth (`output/<slug>.sqlite`), driven
+  ONLY by `scripts/study.py`. Excel / Word / Markdown are regenerable VIEWS — never edited
+  by hand, never treated as data.
+- The ledger is **append-only**: one row per signal, one row per interview. Re-running does
+  not clobber prior interviews. Each client call is recorded once via `add-interview`.
 
-## Scoring (strict)
-- `+1` confirmed, `+0.5` partial, `0` unclear, `-1` contradicted.
-- Aggregate per assumption, then classify:
-  - STRONG: sum >= +1.5
-  - CONTESTED: any positive AND any negative signal present (overrides STRONG)
-  - INVALIDATED: sum <= -0.5
-  - WEAK: everything else
+## Scoring (code-owned, explainable)
+- Signals score `+1` yes, `+0.5` partial, `0` unclear, `-1` no.
+- The verdict is computed in `scripts/scoring.py`, never in spreadsheet formulas. Per
+  assumption, over the interviews that addressed it (weighted by interview ICP-fit):
+  - **strength** = weighted mean stance (−1..+1)
+  - **consensus** = contested when both camps are material; else high/moderate
+  - **confidence** = banded by `n` (interviews addressing it)
+  - **class**: CONTESTED (disagreement) ▸ INVALIDATED (strength ≤ −0.34) ▸
+    STRONG (strength ≥ +0.5 AND confidence ≥ medium) ▸ WEAK (everything else)
+- Every verdict ships with a plain-English **why** plus driver/counter quotes
+  (`study.py why --id <A>`). Thresholds live in the study's `scoring_config`, not in code.
 
-## MVP scope gate
-- ONLY STRONG assumptions populate `MVP Specifications` and `Scoping Matrix`.
-- CONTESTED -> `Open Questions`.
-- WEAK and INVALIDATED -> `Evidence Log` only.
+## Scope gate
+- ONLY STRONG-and-confident assumptions feed MVP scope / PRD Feed and prioritisation.
+- CONTESTED → Open Questions. WEAK / INVALIDATED → evidence appendix only.
 
-## Output style
-- Spreadsheet-safe: single-line cells, no markdown, quote commas, no embedded newlines.
-- Every assumption cites evidence (transcript line ref or `no-signal`).
+## Evidence & provenance
+- Every signal carries a **verbatim quote** and a **line/timestamp ref**. Never paraphrase,
+  never invent a ref. Un-addressed assumptions emit no row (handled as lower `n`).
+- LLM extraction is non-deterministic: signals are **verified by the PM** before they are
+  written to the study. Never write unverified signals.
+
+## Compliance (single-PM, FS/EU)
+- Record **consent** per interview; QA fails if any interview lacks it.
+- Keep coded signals; treat raw transcripts as transient. Storage is local-only.
 
 ## QA gate
-- `qa-validator` MUST pass before reporting completion. Stop hook enforces this.
+- `scripts/study.py qa` MUST pass before reporting completion (consent, provenance,
+  STRONG-is-evidenced). The Stop hook enforces this via `hooks/.qa_state`.
 
 ## Step-by-step confirmation (MANDATORY)
-After every meaningful artifact (intake, assumptions, interview guide, seeded workbook, signals, scoring, populated workbook, deliverables), STOP and ask the user to confirm or request edits before continuing. Never chain steps without explicit approval. This overrides any skill instruction that says "proceed automatically."
+After every meaningful artifact (intake, assumptions, interview guide, study creation,
+each interview's extracted signals, status, synthesis, deliverables), STOP and ask the PM
+to confirm or request edits before continuing. Never chain steps without explicit approval.
+This overrides any skill instruction that says "proceed automatically."
 
 ## Writes
-- Workbook lives locally at `output/<feature_slug>.xlsx`.
-- Writes go through `scripts/workbook.py`. Never edit .xlsx by any other path.
+- All study writes go through `scripts/study.py`. Never write the `.xlsx`/`.sqlite` by any
+  other path (the schema-guard hook blocks `.xlsx` writes that bypass `study.py`).

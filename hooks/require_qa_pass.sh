@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Block Stop unless qa-validator most recently logged a pass.
+# Block Stop unless QA most recently logged a pass (v0.2).
 set -euo pipefail
 STATE="$CLAUDE_PROJECT_DIR/hooks/.qa_state"
-[ -f "$STATE" ] || exit 0  # no workbook activity this session
+[ -f "$STATE" ] || exit 0  # no study activity this session
 grep -q '^pass ' "$STATE" && exit 0
-echo '{"decision":"block","reason":"qa-validator has not passed yet. Run: python3 scripts/workbook.py qa --path <workbook>"}'
+echo '{"decision":"block","reason":"QA has not passed yet. Run: python3 scripts/study.py qa --db <study.sqlite>"}'
 exit 0

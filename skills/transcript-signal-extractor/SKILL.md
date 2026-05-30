@@ -1,34 +1,49 @@
 ---
 name: transcript-signal-extractor
-description: Parse an interview transcript and extract polarity-tagged signals against each assumption.
+description: Parse one interview transcript and extract scored, quote-backed signals against each assumption, for the human-verify gate before writing to the study.
 ---
 
-# transcript-signal-extractor
+# transcript-signal-extractor (v0.2)
+
+Extract signals for **one interview** against the study's assumptions, then hand them
+to the orchestrator's mandatory VERIFY gate. Output feeds `study.py add-interview`.
 
 ## Inputs
-- `assumptions[]`
-- transcript text (with line numbers or timestamps). Source options:
-  - user paste / local file
-  - M365 MCP: `sharepoint_search` to locate the `.docx` or `.vtt`, then `read_resource`
+- `assumptions[]` (id + text, including any emergent ones)
+- transcript text with line numbers or timestamps. Sources:
+  - PM paste / local file
+  - Gong (preferred — consent/retention already governed there)
+  - M365 MCP: `sharepoint_search` for the `.docx`/`.vtt`, then `read_resource`
+- interview metadata: role, firm, segment, ICP-fit (0–1), consent (y/n), date
 
-## Output
+## Output: an interview payload
 
 ```json
-[
-  {
-    "assumption_id": "A1",
-    "quote": "verbatim from transcript",
-    "line_ref": "L42",
-    "polarity": 1,
-    "rationale": "one-line why this polarity"
-  }
-]
+{
+  "interview": {
+    "id": "C2", "label": "PM, Beta Capital", "date": "2026-05-23",
+    "interviewee_role": "Multi-asset PM", "firm": "Beta", "segment": "mid-size",
+    "icp_fit": 0.9, "consent": true, "source": "gong"
+  },
+  "signals": [
+    {"assumption_id": "A1", "score": 1, "polarity": "yes",
+     "quote": "verbatim from transcript", "line_ref": "L42"}
+  ]
+}
 ```
 
 ## Rules
-- Quote VERBATIM. Never paraphrase.
-- One signal per quote. A quote that touches multiple assumptions emits multiple signals.
-- `polarity` in {+1, +0.5, 0, -1} per CLAUDE.md.
-- If an assumption has no signal, emit one row `{polarity: 0, quote: "", line_ref: "no-signal"}` so the gap is recorded.
-- Ignore interviewer statements unless the customer responds confirmingly/contradictingly.
-- Never invent line refs. If no line numbers, use timestamp like `T00:12:34`.
+- **Quote VERBATIM.** Never paraphrase. Never invent a quote or a line ref.
+- `score` in {+1 (yes), +0.5 (partial), 0 (unclear), -1 (no)}; `polarity` is the word form.
+- One signal per (assumption, stance). If a client addresses an assumption more than once,
+  emit each quote — the scorer averages within the interview.
+- If an assumption was NOT addressed, **emit no row for it** (absence is handled by the
+  scorer as lower `n`; do not fabricate a 0 just to fill the grid).
+- Ignore interviewer statements unless the client responds confirming/contradicting.
+- Use line numbers if present; else timestamps like `T00:12:34`.
+
+## Verify gate (the orchestrator enforces this)
+Present every extracted signal with its quote and proposed score. The PM confirms,
+edits scores, or removes signals. **Nothing is written until the PM approves** — set
+`verified: true` on approved signals. Extraction is non-deterministic; the human is the
+final coder of record.

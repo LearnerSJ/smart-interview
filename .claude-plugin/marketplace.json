@@ -6,8 +6,8 @@
     {
       "name": "smart-interview",
       "source": "./",
-      "description": "Customer-interview workflow: brief -> guide -> transcript -> scored assumptions -> PRD-ready Excel + Word + PPT + Markdown deliverables.",
-      "version": "0.1.0"
+      "description": "Multi-interview user-research workflow: brief -> guide -> looped client calls -> code-scored assumptions (strength/consensus/confidence, explainable) -> Excel report + Word/Markdown PRD with quote-level traceability. Single-PM, local SQLite ledger.",
+      "version": "0.2.0"
     }
   ]
 }

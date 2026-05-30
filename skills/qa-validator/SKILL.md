@@ -1,33 +1,36 @@
 ---
 name: qa-validator
-description: Final gate. Verify workbook integrity, scoring consistency, and rule compliance before the workflow reports completion.
+description: Final gate (v0.2). Verify study integrity — consent, evidence provenance, and STRONG-is-evidenced — before the workflow reports completion.
 ---
 
-# qa-validator
+# qa-validator (v0.2)
 
-## Checks (ALL must pass)
+Validates the study ledger (the source of truth), not a spreadsheet. The verdict is
+computed in code, so QA checks the *inputs* and *integrity*, not hand-scored cells.
 
-1. **Sheet set** — exactly: Guide, Assumption Matrix, Scoping Matrix, MVP Specifications, Evidence Log, Open Questions.
-2. **Header lock** — headers match the canonical schema. Any drift -> FAIL.
-3. **Coverage** — every assumption ID in `Assumption Matrix` also appears in `Evidence Log` (real signal or `no-signal`).
-4. **MVP purity** — every `MVP Specifications` row links to an assumption classified STRONG. Any non-STRONG -> FAIL.
-5. **Open Questions coverage** — every CONTESTED assumption appears in `Open Questions`.
-6. **No leakage** — no WEAK / INVALIDATED assumption appears in MVP Specifications or Scoping Matrix.
-7. **Evidence completeness** — every Assumption Matrix row's `evidence_refs` is non-empty.
-8. **Spreadsheet safety** — no unescaped newlines in single-line columns; no markdown.
+## Checks
+
+**Fail (block completion):**
+1. **Consent** — every interview has consent on record (financial-services / EU requirement).
+2. **Provenance** — every signal has a verbatim `quote` and a `line_ref`.
+3. **STRONG-is-evidenced** — every STRONG assumption has at least one positive signal.
+
+**Warn (non-blocking):**
+- **Thin coverage** — assumptions still at `n<=2` (low confidence); surfaced as a saturation hint.
 
 ## How to run
 
 ```bash
-python3 scripts/workbook.py qa --path "$WORKBOOK_PATH"
+python3 scripts/study.py qa --db "$STUDY_DB"
 ```
 
-The script writes `pass` or `fail <reasons>` to `hooks/.qa_state`. The Stop hook reads that file and blocks completion until `pass`.
+The script writes `pass` or `fail <reasons>` to `hooks/.qa_state`. The Stop hook reads
+that file and blocks completion until `pass`.
 
 ## Output
 
 ```json
-{"pass": true, "failures": []}
+{"pass": true, "failures": [], "warnings": ["thin (n<=2): A3, A6"]}
 ```
 
-On fail, return findings to the orchestrator. Do NOT mark workflow complete.
+On fail, return findings to the orchestrator. Do NOT mark the workflow complete.
