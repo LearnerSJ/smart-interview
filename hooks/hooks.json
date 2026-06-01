@@ -4,7 +4,7 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/hooks/guard_schema.sh" }
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/guard_schema.sh" }
         ]
       }
     ],
@@ -12,14 +12,14 @@
       {
         "matcher": "Bash",
         "hooks": [
-          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/hooks/log_evidence.sh" }
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/log_evidence.sh" }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/hooks/require_qa_pass.sh" }
+          { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/hooks/require_qa_pass.sh" }
         ]
       }
     ]

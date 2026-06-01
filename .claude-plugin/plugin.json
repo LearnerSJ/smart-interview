@@ -1,6 +1,6 @@
 {
   "name": "smart-interview",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Multi-interview user-research workflow: brief -> guide -> looped client calls -> code-scored assumptions (with explainability) -> Excel report + Word/Markdown PRD + PowerPoint readout. Single-PM, local SQLite ledger.",
   "author": {
     "name": "Sullabh Jhamb",
